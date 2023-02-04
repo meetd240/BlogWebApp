@@ -1,4 +1,5 @@
 ﻿using BlogWebAppProj.Data;
+using BlogWebAppProj.Data.Repository;
 using BlogWebAppProj.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,11 +11,11 @@ namespace BlogWebAppProj.Controllers
 {
     public class HomeController : Controller
     {
-        private AppDbContext _ctx;
+        private IRepository _repository;
 
-        public HomeController(AppDbContext ctx)
+        public HomeController(IRepository repository)
         {
-            _ctx = ctx;
+            _repository = repository;
         }
         public IActionResult Index()
         {
@@ -33,11 +34,15 @@ namespace BlogWebAppProj.Controllers
         }
 
         [HttpPost]
-        public async Task< IActionResult> Edit(Post post)
+        public async Task<IActionResult> Edit(Post post)
         {
-            _ctx.Posts.Add(post);
-            await _ctx.SaveChangesAsync();
-            return RedirectToAction("Index");
+            _repository.AddPost(post);
+
+            if (await _repository.SaveChangesAsync())
+                return RedirectToAction("Index");
+
+            else
+                return View(post);
         }
     }
 }
