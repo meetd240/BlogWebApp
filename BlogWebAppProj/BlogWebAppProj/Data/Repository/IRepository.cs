@@ -10,7 +10,7 @@ namespace BlogWebAppProj.Data.Repository
     {
         Post GetPost(int id);
 
-        List<Post> GetAllPosts(int id);
+        List<Post> GetAllPosts();
 
         void AddPost(Post post);
         
