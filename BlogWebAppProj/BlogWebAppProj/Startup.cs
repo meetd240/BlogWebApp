@@ -3,6 +3,7 @@ using BlogWebAppProj.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 
 namespace BlogWebAppProj
 {
@@ -27,6 +29,15 @@ namespace BlogWebAppProj
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AppDbContext>(options=>options.UseSqlServer(_config["DefaultConnection"]));
+            services.AddDefaultIdentity<IdentityUser>(options=> {
+                options.Password.RequireDigit = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+
+            })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
             services.AddTransient<IRepository, Repository>();
             services.AddMvc(option=>option.EnableEndpointRouting=false);
 
@@ -39,6 +50,8 @@ namespace BlogWebAppProj
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
 
             app.UseMvcWithDefaultRoute();
 
