@@ -27,7 +27,7 @@ namespace BlogWebAppProj.Controllers
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
             var result = await _signInManager.PasswordSignInAsync(loginViewModel.Username, loginViewModel.Password,false,false);
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index","Panel");
         }
 
         [HttpGet]
