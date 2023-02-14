@@ -1,5 +1,7 @@
-﻿using BlogWebAppProj.Data.Repository;
+﻿using BlogWebAppProj.Data.FileManager;
+using BlogWebAppProj.Data.Repository;
 using BlogWebAppProj.Models;
+using BlogWebAppProj.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,11 +14,14 @@ namespace BlogWebAppProj.Controllers
     [Authorize(Roles = "Admin")]
     public class PanelController : Controller
     {
+        private readonly IFileManager _fileManager;
+
         public IRepository _repository { get; }
 
-        public PanelController(IRepository repository)
+        public PanelController(IRepository repository, IFileManager fileManager)
         {
             _repository = repository;
+            _fileManager = fileManager;
         }
         public IActionResult Index()
         {
@@ -28,18 +33,31 @@ namespace BlogWebAppProj.Controllers
         public IActionResult Edit(int? id)
         {
             if (id == null)
-                return View(new Post());
+                return View(new PostViewModel());
 
             else
             {
                 var post = _repository.GetPost((int)id);
-                return View(post);
+                return View(new PostViewModel 
+                { 
+                    Id = post.Id,
+                    Title = post.Title,
+                    Body = post.Body,
+                });
             }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Post post)
+        public async Task<IActionResult> Edit(PostViewModel vm)
         {
+            var post = new Post
+            {
+                Id = vm.Id,
+                Title = vm.Title,
+                Body = vm.Body,
+                Image = await _fileManager.SaveImage(vm.Image)
+            };
+
             if (post.Id > 0)
                 _repository.UpdatePost(post);
             else

@@ -1,4 +1,5 @@
 using BlogWebAppProj.Data;
+using BlogWebAppProj.Data.FileManager;
 using BlogWebAppProj.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +46,7 @@ namespace BlogWebAppProj
 
             });
             services.AddTransient<IRepository, Repository>();
+            services.AddTransient<IFileManager, FileManager>();
             services.AddMvc(option=>option.EnableEndpointRouting=false);
 
         }
@@ -56,6 +58,8 @@ namespace BlogWebAppProj
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseStaticFiles();
 
             app.UseAuthentication();
 
