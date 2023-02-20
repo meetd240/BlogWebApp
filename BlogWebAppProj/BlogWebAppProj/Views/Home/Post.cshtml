@@ -4,11 +4,25 @@
 
 }
 
-<h2>@Model.Title</h2>
+@*<h2>@Model.Title</h2>
 
 @if(!String.IsNullOrEmpty(Model.Image))
 {
     var image_Path = $"/Image/{Model.Image}";
     <img src="@image_Path" width="500" />
 }
-<p>@Model.Body</p>
+<p>@Model.Body</p>*@
+
+<div class="container">
+    <div class="post">
+        @if (!String.IsNullOrEmpty(Model.Image))
+        {
+            var image_Path = $"/Image/{Model.Image}";
+            <img src="@image_Path"  />
+            <span class="title">@Model.Title</span>
+        }
+    </div>
+    <div class="post-body">
+        @Html.Raw(Model.Body)        ]
+    </div>
+</div>
